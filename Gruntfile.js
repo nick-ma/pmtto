@@ -3,31 +3,33 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    uglify: {
-      options: {
-        banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-      },
-      pagejs: {
-        // src: 'public/pagejs/*.js',
-        // dest: 'dist/pagejs/' + name + '.js'
-        files: [{
-          expand: true,
-          cwd: 'public/pagejs',
-          src: '**/*.js',
-          dest: 'public/pagejs-min'
-        }]
-      },
-      clis: {
-        // src: 'public/pagejs/*.js',
-        // dest: 'dist/pagejs/' + name + '.js'
-        files: [{
-          expand: true,
-          cwd: 'clis',
-          src: '**/*.js',
-          dest: 'dist/clis'
-        }]
-      }
-    },
+    jqueryCheck: 'if (typeof jQuery === "undefined") { throw new Error("Bootstrap requires jQuery") }\n\n',
+    banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
+    // uglify: {
+    //   options: {
+
+    //   },
+    //   pagejs: {
+    //     // src: 'public/pagejs/*.js',
+    //     // dest: 'dist/pagejs/' + name + '.js'
+    //     files: [{
+    //       expand: true,
+    //       cwd: 'public/pagejs',
+    //       src: '**/*.js',
+    //       dest: 'public/pagejs-min'
+    //     }]
+    //   },
+    //   clis: {
+    //     // src: 'public/pagejs/*.js',
+    //     // dest: 'dist/pagejs/' + name + '.js'
+    //     files: [{
+    //       expand: true,
+    //       cwd: 'clis',
+    //       src: '**/*.js',
+    //       dest: 'dist/clis'
+    //     }]
+    //   }
+    // },
     nodemon: {
       server: {
         options: {
@@ -77,6 +79,40 @@ module.exports = function(grunt) {
     clean: {
       dist: ['client/dist']
     },
+    concat: {
+      options: {
+        banner: '<%= banner %><%= jqueryCheck %>',
+        stripBanners: false
+      },
+      bootstrap: {
+        src: [
+          'client/src/js/bootstrap/transition.js',
+          'client/src/js/bootstrap/alert.js',
+          'client/src/js/bootstrap/button.js',
+          'client/src/js/bootstrap/carousel.js',
+          'client/src/js/bootstrap/collapse.js',
+          'client/src/js/bootstrap/dropdown.js',
+          'client/src/js/bootstrap/modal.js',
+          'client/src/js/bootstrap/tooltip.js',
+          'client/src/js/bootstrap/popover.js',
+          'client/src/js/bootstrap/scrollspy.js',
+          'client/src/js/bootstrap/tab.js',
+          'client/src/js/bootstrap/affix.js'
+        ],
+        dest: 'client/dist/js/bootstrap.js'
+      }
+    },
+
+    uglify: {
+      options: {
+        banner: '<%= banner %>',
+        report: 'min'
+      },
+      bootstrap: {
+        src: ['<%= concat.bootstrap.dest %>'],
+        dest: 'client/dist/js/bootstrap.min.js'
+      }
+    },
     recess: {
       options: {
         compile: true,
@@ -118,6 +154,7 @@ module.exports = function(grunt) {
 
   // Load the plugin that provides the "uglify" task.
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -126,7 +163,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-recess');
 
   // JS distribution task.
-  // grunt.registerTask('dist-js', ['concat', 'uglify']);
+  grunt.registerTask('dist-js', ['concat', 'uglify']);
 
   // CSS distribution task.
   grunt.registerTask('dist-css', ['recess']);
@@ -135,7 +172,7 @@ module.exports = function(grunt) {
   grunt.registerTask('dist-fonts', ['copy']);
 
   // Full distribution task.
-  // grunt.registerTask('dist', ['clean', 'dist-css', 'dist-fonts', 'dist-js']);
+  grunt.registerTask('dist', ['clean', 'dist-css', 'dist-fonts', 'dist-js']);
 
   // Default task(s).
   grunt.registerTask('default', ['watch']);
