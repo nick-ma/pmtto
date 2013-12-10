@@ -111,6 +111,10 @@ module.exports = function(grunt) {
       bootstrap: {
         src: ['<%= concat.bootstrap.dest %>'],
         dest: 'client/dist/js/bootstrap.min.js'
+      },
+      jquery: {
+        src: ['client/src/js/jquery/jquery-1.10.2.js'],
+        dest: 'client/dist/js/jquery.min.js'
       }
     },
     recess: {
@@ -148,6 +152,10 @@ module.exports = function(grunt) {
         cwd: "client/src/fonts/",
         src: ["*"],
         dest: 'client/dist/fonts/'
+      },
+      jquery: {
+        src: 'client/src/js/jquery/jquery-1.10.2.js',
+        dest: 'client/dist/js/jquery.js'
       }
     },
   });

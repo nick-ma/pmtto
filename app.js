@@ -1,4 +1,4 @@
-
+var APP_NAME = 'Start Template';
 /**
  * Module dependencies.
  */
@@ -21,6 +21,8 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.locals.APP_NAME = APP_NAME;
 
 // development only
 if ('development' == app.get('env')) {
